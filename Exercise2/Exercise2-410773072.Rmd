@@ -18,7 +18,8 @@ iPeenData <- read_csv("https://raw.githubusercontent.com/tpemartin/course-107-1-
 
 ```{r ans1}
 as.factor(iPeenData$均消)->iPeenData$均消
-stringr::str_replace(iPeenData$均消,",","")->iPeenData$均消 #將均消的“，”，換成“”——str_replace(資料代號，“要換掉的東西”，“要轉換的形式”)
+library(stringr)
+str_replace(iPeenData$均消,",","")->iPeenData$均消 #將均消的“，”，換成“”——str_replace(資料代號，“要換掉的東西”，“要轉換的形式”)
 str_replace(iPeenData$均消,"本店均消","")->iPeenData$均消
 str_replace(iPeenData$均消,"\n","")->iPeenData$均消
 str_replace(iPeenData$均消,"\t","")->iPeenData$均消
@@ -40,8 +41,8 @@ filmVotingData <- read_csv("https://raw.githubusercontent.com/tpemartin/course-1
 2.1 將`filmVotingData$Timestamp`透過`lubridate::mdy_hms()`轉成POSIXct Date/Time class。
 
 ```{r ans21}
-mdy_hms(filmVotingData$Timestamp)->filmVotingData$Timestamp
-as.POSIXct.Date(filmVotingData$Timestamp)->filmVotingData$Timestamp
+lubridate::mdy_hms(filmVotingData$Timestamp)->filmVotingData$Timestamp
+as.POSIXct(filmVotingData$Timestamp)->filmVotingData$Timestamp
 filmVotingData$Timestamp
 
 ```
@@ -49,14 +50,14 @@ filmVotingData$Timestamp
 2.2 由於原始資料的時區為UTC，請透過`lubridate::with_tz()`將時區設為"Asia/Taipei"。
 
 ```{r ans22}
-mdy_hms(filmVotingData$Timestamp, tz = "UTC")->filmVotingData$Timestamp
-with_tz(filmVotingData$Timestamp, "Asia/Taipei" )
+lubridate::mdy_hms(filmVotingData$Timestamp, tz = "UTC")->filmVotingData$Timestamp
+lubridate::with_tz(filmVotingData$Timestamp, "Asia/Taipei" )
 ```
 
 2.3 由Timestamp透過`lubridate::hour()`取出學生上網填表的小時值並存在新的變數`filmVotingData$hour`。  
 
 ```{r ans23}
-hour(filmVotingData$Timestamp)->filmVotingData$hour
+lubridate::hour(filmVotingData$Timestamp)->filmVotingData$hour
 filmVotingData$hour
 ```
 
