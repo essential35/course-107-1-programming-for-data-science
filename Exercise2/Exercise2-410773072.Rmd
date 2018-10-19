@@ -20,10 +20,8 @@ iPeenData <- read_csv("https://raw.githubusercontent.com/tpemartin/course-107-1-
 as.factor(iPeenData$均消)->iPeenData$均消
 library(stringr)
 str_replace(iPeenData$均消,",","")->iPeenData$均消 #將均消的“，”，換成“”——str_replace(資料代號，“要換掉的東西”，“要轉換的形式”)
-str_replace(iPeenData$均消,"本店均消","")->iPeenData$均消
-str_replace(iPeenData$均消,"\n","")->iPeenData$均消
-str_replace(iPeenData$均消,"\t","")->iPeenData$均消
-str_replace(iPeenData$均消,"元","")->iPeenData$均消
+str_replace_all(iPeenData$均消,"[\n\t本店均消元]","")->iPeenData$均消
+#str_replace_all(資料代號，“要換掉的東西”，“要轉換的形式”)——>所有需要項目裡面只要符合“要換掉的東西”的，都會被換成“要轉換的形式”。p.s.如果有很多個要換，"[ ]"將那些東西集合在一起
 as.numeric(iPeenData$均消)->iPeenData$均消
 iPeenData$均消
 
