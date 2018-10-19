@@ -40,7 +40,7 @@ filmVotingData <- read_csv("https://raw.githubusercontent.com/tpemartin/course-1
 
 ```{r ans21}
 lubridate::mdy_hms(filmVotingData$Timestamp)->filmVotingData$Timestamp
-as.POSIXct(filmVotingData$Timestamp)->filmVotingData$Timestamp
+#mdy_hms() 本身是個parser (電腦語意詮釋器），它的功能就是讓電腦懂你的內容為 Date/Time，而電腦本身對Date/Time的認知只在POSIXct格式上，所以這個parser的功能就是把字串翻譯成POSIXct。
 filmVotingData$Timestamp
 
 ```
