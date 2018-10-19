@@ -23,13 +23,13 @@ bankdata <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/ma
 
 ### 1.1
 將**銀行**變數改成factor
-```{r q1-1}
+```{r ans11}
 as.factor(bankdata$銀行)
 ```
 
 ### 1.2
 將**年月**改成西元年月
-```{r q1-2}
+```{r ans12}
 stringr::str_c("0",bankdata$年月,'/01')->民國年月日
 library(lubridate)
 ymd(民國年月日)->民國年月日1
@@ -38,7 +38,8 @@ format(as.POSIXct(西元年月日),format=" %Y/%m")->西元年月
 西元年月
 ```
 
-```{r q1-2 answer2}
+```{r} 
+#1.2的第二種解法
 stringr::str_c("0",bankdata$年月,'/01')->民國年月日
 library(lubridate)
 ymd(民國年月日)->民國年月日1
