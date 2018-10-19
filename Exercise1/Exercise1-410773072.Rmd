@@ -30,21 +30,21 @@ as.factor(bankdata$銀行)
 ### 1.2
 將**年月**改成西元年月
 ```{r q1-2}
-str_c("0",bankdata$年月,'/01')->民國年月日
+stringr::str_c("0",bankdata$年月,'/01')->民國年月日
 library(lubridate)
 ymd(民國年月日)->民國年月日1
-str_c(民國年月日1 + years(1911))->西元年月日
+stringr::str_c(民國年月日1 + years(1911))->西元年月日
 format(as.POSIXct(西元年月日),format=" %Y/%m")->西元年月
 西元年月
 ```
 
 ```{r q1-2 answer2}
-str_c("0",bankdata$年月,'/01')->民國年月日
+stringr::str_c("0",bankdata$年月,'/01')->民國年月日
 library(lubridate)
 ymd(民國年月日)->民國年月日1
-str_c(民國年月日1 + years(1911))->西元年月日
+stringr::str_c(民國年月日1 + years(1911))->西元年月日
 as.factor(西元年月日)->西元年月日
-str_replace(西元年月日,"-01","")->西元年月
+stringr::str_replace(西元年月日,"-01","")->西元年月
 西元年月
 ```
 
