@@ -43,11 +43,24 @@ format(as.POSIXct(西元年月日),format=" %Y/%m")->西元年月
 stringr::str_c("0",bankdata$年月,'/01')->民國年月日
 library(lubridate)
 ymd(民國年月日)->民國年月日1
-stringr::str_c(民國年月日1 + years(1911))->西元年月日
+民國年月日1 + years(1911)->西元年月日
 as.factor(西元年月日)->西元年月日
 stringr::str_replace(西元年月日,"-01","")->西元年月
 西元年月
 ```
+
+```{r}
+library(stringr)
+library(lubridate)
+str_c('0',bankdata$年月,'/01')->民國年月日
+ymd(民國年月日)-> 民國年月日
+民國年月日 + years(1911) -> 西元年月日
+as.character(西元年月日)-> 西元年月日
+str_replace(西元年月日,"-","/")->西元年月日
+str_sub(西元年月日,1,7)->西元年月日
+西元年月日 
+```
+
 
 ## 2
 Google天災地圖會發佈天災時地資訊，如[潭美颱風(Typhoon Trami)](https://google.org/crisismap/google.com/2018-trami)，但它的時間是以UTC表示，如"2018/30/09 00:00 UTC",試透過`lubridate::with_tz()`將它轉成台灣時間
