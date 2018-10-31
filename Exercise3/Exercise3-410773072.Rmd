@@ -66,7 +66,8 @@ hwData<-gs_read(gsLMSHabit,ws="作業上傳")
 ### 2.1
 資料的Timestamp為台灣時間，請將Timestamp變數設定成為Date/Time類型（即POSIXct)且時區是"Asia/Taipei"。（hint: `lubridate::mdy_hms()`）
 ```{r ans21}
-lubridate::with_tz(time,"Asia/Taipei")->hwData$Timestamp
+lubridate::mdy_hms(hwData$Timestamp)->time
+lubridate::with_tz(time,tz = "Asia/Taipei")->hwData$Timestamp
 ```
 
 ### 2.2
@@ -96,7 +97,7 @@ round(hwData$early,digits = 0)->hwData$early
 
 ```{r ans25}
 (hwData$作業代碼 == "hw1")->hw1
-hwData[c(hw1),3]->hw1people
-table(hw1people)
+hwData[c(hw1),3]->hw1onTimepeople
+table(hw1onTimepeople)
 ```
 
