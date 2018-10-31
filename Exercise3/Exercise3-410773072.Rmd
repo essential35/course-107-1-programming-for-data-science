@@ -53,9 +53,12 @@ prop.table(table(peopleCommit))   #prop.table 將各類數目換成占全部的�
 ```{r ans14}
 (classData$`公-10-06` == "沒看公告")->peopleNotsee
 classData[c(peopleNotsee),c(1,2,5)]->people0
-(people0$`練2018-10-17-1` == "1")->peopleCommit2
-prop.table(table(peopleCommit2))
 
+(people0$`練2018-10-17-1` == "1")->peopleCommit2
+people0[c(peopleCommit2),3]->peopleCommit2
+
+percentage<-(nrow(peopleCommit2)/nrow(people0))
+percentage
 ```
 
 ## 2 作業繳交時間
