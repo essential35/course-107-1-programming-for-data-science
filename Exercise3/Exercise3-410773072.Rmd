@@ -21,16 +21,19 @@ classData<-gs_read(gsLMSHabit,ws="公告與練習",locale=readr::locale(encoding
 變數「公-10-06」為1代表有看公告，請將classData$`公-10-06`改成factor類型且有看公告的人，他的觀察值為"有看公告"；沒看公告的觀察值為"沒看公告"。
 
 ```{r ans11}
-stringr::str_replace_all(classData$`公-10-06`,"1","有看公告")->classData$`公-10-06`
-stringr::str_replace_all(classData$`公-10-06`,"0","沒看公告")->classData$`公-10-06`
+as.factor(classData$`公-10-06`)->classData$`公-10-06`
+levels(classData$`公-10-06`)<-c("沒看公告","有看公告")
+
+#way2: use “str_replace_all” to change
 ```
+
 
 ### 1.2 
 選出"有看公告"的classData樣本。
 
 ```{r ans12}
 (classData$`公-10-06` == "有看公告")->peopleSee
-classData[c(peopleSee),c(1,2,5)]
+classData[c(peopleSee),]
 ```
 
 ### 1.3
@@ -41,7 +44,7 @@ classData[c(peopleSee),c(1,2,5)]
 ```{r ans13}
 classData[c(peopleSee),c(1,2,5)]->people1
 (people1$`練2018-10-17-1` == "1")->peopleCommit
-table(peopleCommit)   #?
+prop.table(table(peopleCommit))   #prop.table 將各類數目換成占全部的比例
 ```
 
 ### 1.4
@@ -51,7 +54,8 @@ table(peopleCommit)   #?
 (classData$`公-10-06` == "沒看公告")->peopleNotsee
 classData[c(peopleNotsee),c(1,2,5)]->people0
 (people0$`練2018-10-17-1` == "1")->peopleCommit2
-table(peopleCommit2)
+prop.table(table(peopleCommit2))
+
 ```
 
 ## 2 作業繳交時間
