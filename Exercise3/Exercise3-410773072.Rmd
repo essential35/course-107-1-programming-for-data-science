@@ -44,7 +44,10 @@ classData[c(peopleSee),]
 ```{r ans13}
 classData[c(peopleSee),c(1,2,5)]->people1
 (people1$`練2018-10-17-1` == "1")->peopleCommit
-prop.table(table(peopleCommit))   #prop.table 將各類數目換成占全部的比例
+#prop.table(table(peopleCommit))---prop.table 將各類數目換成占全部的比例
+as.data.frame(prop.table(table(peopleCommit)))->PTable
+as.numeric(PTable[2,][2])->PTable
+PTable
 ```
 
 ### 1.4
@@ -73,8 +76,8 @@ hwData<-gs_read(gsLMSHabit,ws="作業上傳")
 ### 2.1
 資料的Timestamp為台灣時間，請將Timestamp變數設定成為Date/Time類型（即POSIXct)且時區是"Asia/Taipei"。（hint: `lubridate::mdy_hms()`）
 ```{r ans21}
-lubridate::mdy_hms(hwData$Timestamp)->time
-lubridate::with_tz(time,tz = "Asia/Taipei")->hwData$Timestamp
+lubridate::mdy_hms(hwData$Timestamp)->hwData$Timestamp
+
 ```
 
 ### 2.2
