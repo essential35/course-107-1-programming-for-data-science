@@ -3,8 +3,8 @@ title: "練習1"
 date: "2018-10-03"
 output: html_document
 params:
-  studentID: ""
-  studentName: "答案"
+  studentID: "你的學號"
+  studentName: "你的名字"
 ---
 存檔時，請用你的學號當延伸檔名。例如：若你的學號為41078392，則請`File->Save As...`存成Exercise1-41078392.Rmd。
 
@@ -22,28 +22,43 @@ bankdata <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/ma
 
 ### 1.1
 將**銀行**變數改成factor
-
 ```{r ans11}
-factor(bankdata$銀行)->bankdata$銀行
-
+as.factor(bankdata$銀行)->bankdata$銀行
 ```
 
 ### 1.2
 將年月改成西元年月
 ```{r ans12}
-library(lubridate)
 library(stringr)
-str_c("1",bankdata$年月,"/01") -> dateTime
-ymd(dateTime)+years(911) -> dateTime
-bankdata$年月 <- dateTime
+library(lubridate)
+bankdata$年月 %>%
+  str_c("0",.,"-01") %>%
+  ymd(.) %>%
+  {. +years(1911)} ->bankdata$年月
+  
 ```
+```{r}
+library(stringr)
+library(dplyr)
+library(lubridate)
+bankdata %>%
+  mutate(
+    年月= str_c("0",年月,"-01") ,
+    年月=ymd(年月),
+    年月={年月 +years(1911)}
+  )->bankdata
+```
+
 
 ## 2
 Google天災地圖會發佈天災時地資訊，如[潭美颱風(Typhoon Trami)](https://google.org/crisismap/google.com/2018-trami)，但它的時間是以UTC表示，如"2018/30/09 00:00 UTC",試透過`lubridate::with_tz()`將"2018/30/09 00:00 UTC"轉成台灣時間。(Hint: 台灣tzone可用`grep("Taipei",OlsonNames(),value=TRUE)`指令查得)
 
 ```{r ans2}
-library(lubridate)
-with_tz(ymd_hm("2018/09/30 00:00"), tzone="Asia/Taipei")
+lubridate::ymd_hms("2018/09/30 00:00:00") %>%
+  lubridate::with_tz(.,tz="Asia/Taipei")
+```
+```{r}
+grep("Taipei",OlsonNames(),value=TRUE)
 ```
 
 
