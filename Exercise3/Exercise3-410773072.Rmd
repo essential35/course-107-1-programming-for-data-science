@@ -92,7 +92,7 @@ deadline<-lubridate::ymd_hms("2018-10-24 00:00:00",tz = "Asia/Taipei")
 將`deadline`減去`hwData$Timestap`你會得到一個向量物件，其class為difftime。它的值為兩個Date/Time差了多少秒,但這並不容易理解。使用`difftime()`算出每個作業交件提早了多少**天**, 並存在`hwData$early`裡。
 
 ```{r ans23}
-difftime(deadline,hwData$Timestamp,units = c("days"))->hwData$early
+difftime(deadline,hwData$Timestamp,units = "days")->hwData$early
 ```
 
 ### 2.4
@@ -106,7 +106,7 @@ round(hwData$early,digits = 0)->hwData$early
 作業1（即作業代碼為"hw1"）準時交的人中，他們的提早天數分佈如何？請使用`table()`呈現。
 
 ```{r ans25}
-(hwData$作業代碼 == "hw1")->hw1
+(hwData$Timestamp < deadline & hwData$作業代碼 == "hw1")->hw1
 hwData[c(hw1),3]->hw1onTimepeople
 table(hw1onTimepeople)
 ```
