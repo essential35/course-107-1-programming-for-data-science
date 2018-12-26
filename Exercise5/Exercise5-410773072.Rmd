@@ -149,7 +149,7 @@ index<-vector("numeric",length(x))
     }
     
   for (t in seq_along(x)) {
-  index[t]<-(p[t]*log10(p[t]))
+  index[t]<-(p[t]*log(p[t]))
    }
     }
   
@@ -157,6 +157,16 @@ index<-vector("numeric",length(x))
   sindex
 }
 
+```
+
+```{r ans17}
+#ans
+shannon<-function(x){
+  x %>% table %>%
+    {./sum(.)} -> p
+  -sum(p*log(p)) -> ShannonIndex   
+  return(ShannonIndex)
+}
 ```
 
 
