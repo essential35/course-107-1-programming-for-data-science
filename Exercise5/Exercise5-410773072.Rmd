@@ -98,6 +98,50 @@ totalCredits <- function(x){
 }
 totalCredits("edfeQ7fb8")
 ```
+```{r}
+#ans
+totalCredits<-function(x){
+  transcriptData[transcriptData$學號==x,]->subsample 
+  subsample %>%
+    mutate(
+      及格=(學期成績>=60)
+    ) %>%
+    summarise(
+      學號=學號[1],
+      總修習學分數=sum(學分數),
+      總實得學分數=sum(學分數[及格])
+    )  
+}
+```
+
+```{r}
+b<-3
+examplefun<- function(a,b){
+  a+b
+}
+examplefun(10,b)
+```
+
+```{r}
+x<-seq_along(transcriptData$學號)
+x
+#map(c(1,2...,2803),function(x))   x=1的值帶入function，得到的值回存
+i<-2
+totalCreditsOfStudent_i<-function(i){
+  transcriptData$學號[i] %>% totalCredits
+}
+
+
+#map(x,totalCreditsOfStudent_i)
+#map(transcriptData$學號,totalCredits)
+#把學號丟回totalCredits的函數內，因為此函數可以接到學號變數得出答案
+
+```
+
+```{r}
+library(codetools)
+findGlobals(totalCredits)
+```
 
 
 ## 1.5 取出系別代號
@@ -184,3 +228,11 @@ shannon(c("D8","G8","H1","J4","L6","M6","N3","N8","O3","P1","Q7","Q9","S3","V1",
 
 
 > Shannon index值越高表示學生系別背景越多樣化。
+
+##challenge
+在transcriptData創新的logic變數**每週一第六節有課**
+```{r}
+str_replace(transcriptData$上課時間及教室,"~",":")->transcriptData$上課時間及教室
+str_c("c(",transcriptData$上課時間及教室,")")->transcriptData$上課時間及教室
+```
+
