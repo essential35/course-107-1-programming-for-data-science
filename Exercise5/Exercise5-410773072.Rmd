@@ -132,7 +132,7 @@ totalCreditsOfStudent_i<-function(i){
 }
 
 
-#map(x,totalCreditsOfStudent_i)
+map(x,totalCreditsOfStudent_i)
 #map(transcriptData$學號,totalCredits)
 #把學號丟回totalCredits的函數內，因為此函數可以接到學號變數得出答案
 
