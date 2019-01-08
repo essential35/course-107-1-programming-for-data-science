@@ -12,14 +12,14 @@ params:
 
 repoURL若有，老師要給你建議時會更容易，但不強迫。
 
-```{r}
-Sys.setlocale("LC_CTYPE", "en_US.UTF-8")
-```
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr); library(stringr); library(lubridate); library(purrr)
 ```
+```{r}
+Sys.setlocale("LC_CTYPE", "en_US.UTF-8")
+```
+
 
 # 1. 成績資料分析
 
@@ -38,10 +38,7 @@ transcriptData <- read_csv("https://raw.githubusercontent.com/tpemartin/github-d
 取出學號edfeQ7fb8的子樣本：
 
 ```{r ans11}
-transcriptData %>%
-  {.$學號 == "edfeQ7fb8"} %>%
-  transcriptData[.,]->subsample
-subsample
+transcriptData %>% .[.$學號=="edfeQ7fb8",]->subsample
 ```
 
 ## 1.2 總學分數
@@ -56,14 +53,10 @@ subsample$學期成績 >= 60 -> subsample$及格 # 1
 請用dplyr函數改寫以上三個步驟：使用`mutate()`完成#1，接著用`summarise()`完成#2及#3
 ```{r ans12}
 subsample %>%
-  mutate(
-    及格 = {.$學期成績 >= 60 }
-  ) -> subsample
-
-subsample %>%
+  mutate(及格=學期成績>=60) %>%
   summarise(
-    總修習學分數=sum(.$學分數),
-    總實得學分數=sum(.$學分數[.$及格])
+    總修習學分數=sum(學分數),
+    總實得學分數=sum(學分數[及格])
   )
 ```
 
@@ -75,10 +68,11 @@ subsample %>%
 
 ```{r ans13}
 subsample %>%
+  mutate(及格=學期成績>=60) %>%
   summarise(
-    學號 = .$學號[1],
-    總修習學分數=sum(.$學分數),
-    總實得學分數=sum(.$學分數[.$及格])
+    學號=學號[1],
+    總修習學分數=sum(學分數),
+    總實得學分數=sum(學分數[及格])
   )
 ```
 
@@ -87,60 +81,17 @@ subsample %>%
 設計一個學分數計算函數稱之為totalCredits，當我們給它學號字串，它便會回傳給我們「學號」、「總修習學分數」、「總實得學分數」三項值。以上題為例,`totalCredits("edfeQ7fb8")`會回傳上題答案值。
 
 ```{r ans14}
-totalCredits <- function(x){
-  id <- x
-  subsample1<- transcriptData[(transcriptData$學號 == id),]
-  twant <- sum(subsample1$學分數)
-  subsample1$學期成績 >= 60 -> subsample1$及格
-  tget <- sum(subsample1$學分數[subsample1$及格])
-  paste0("學號:",id," 總修習學分數:",twant," 總實得學分數:",tget)->result
-  return(result)
-}
-totalCredits("edfeQ7fb8")
-```
-```{r}
-#ans
 totalCredits<-function(x){
-  transcriptData[transcriptData$學號==x,]->subsample 
-  subsample %>%
-    mutate(
-      及格=(學期成績>=60)
-    ) %>%
+  transcriptData %>%
+    .[(.$學號==x),] %>%
+    mutate(及格=學期成績>=60) %>%
     summarise(
       學號=學號[1],
-      總修習學分數=sum(學分數),
-      總實得學分數=sum(學分數[及格])
-    )  
+    總修習學分數=sum(學分數),
+    總實得學分數=sum(學分數[及格])
+    )
 }
-```
-
-```{r}
-b<-3
-examplefun<- function(a,b){
-  a+b
-}
-examplefun(10,b)
-```
-
-```{r}
-x<-seq_along(transcriptData$學號)
-x
-#map(c(1,2...,2803),function(x))   x=1的值帶入function，得到的值回存
-i<-2
-totalCreditsOfStudent_i<-function(i){
-  transcriptData$學號[i] %>% totalCredits
-}
-
-
-map(x,totalCreditsOfStudent_i)
-#map(transcriptData$學號,totalCredits)
-#把學號丟回totalCredits的函數內，因為此函數可以接到學號變數得出答案
-
-```
-
-```{r}
-library(codetools)
-findGlobals(totalCredits)
+totalCredits("edfeQ7fb8")
 ```
 
 
@@ -148,8 +99,8 @@ findGlobals(totalCredits)
 
 學號的第5-6碼為此學生系別, 請在transcriptData新增**系別**欄位。
 ```{r ans15}
-transcriptData$學號 %>% str_sub(.,5,6) -> transcriptData$系別
-
+transcriptData %>%
+  mutate(系別=str_sub(學號,5,6))->transcriptData
 ```
 
 
@@ -159,9 +110,8 @@ transcriptData$學號 %>% str_sub(.,5,6) -> transcriptData$系別
 （hint: 由於每個科目可以有很多學生修，取出每位學生修的通識會有不少重覆，此時可以用`unique()`函數去掉重複的部份即是完整的科目種類。）
 ```{r ans16}
 transcriptData %>%
-  {(.$學年 == "100") & (.$學期 == "1") & (.$`必選修類別（必∕選∕通）` == "通")} %>%
-  transcriptData[.,] %>%
-  {unique(.$科目名稱)} -> 通識科目總表
+  filter(`必選修類別（必∕選∕通）`=="通",學年=="100",學期=="1") %>%
+  .$科目名稱 %>% unique ->通識科目總表
 ```
 
 ## 1.7 課堂學生系別背景多樣化
@@ -178,39 +128,13 @@ transcriptData %>%
   
   
 ```{r ans17}
-shannon<-function(x){
-  have<-vector("numeric",length(x))
-p<-vector("numeric",length(x))
-index<-vector("numeric",length(x))
-  
-  for (i in seq_along(x)) {
-    sample1 %>%
-      filter(系別 == x[i]) %>%
-      nrow -> have[i]
-    
-    for (j in seq_along(x)) {
-    p[j]<-(have[j]/sum(have))
-    }
-    
-  for (t in seq_along(x)) {
-  index[t]<-(p[t]*log(p[t]))
-   }
-    }
-  
--sum(index,na.rm = T)->sindex
-  sindex
-}
-
-```
-
-```{r ans17}
-#ans
-shannon<-function(x){
+shannon<- function(x){
   x %>% table %>%
-    {./sum(.)} -> p
-  -sum(p*log(p)) -> ShannonIndex   
-  return(ShannonIndex)
+  {./sum(.)}->p
+  Shannonindex<-{-sum(p*log(p))}
+  return(Shannonindex)
 }
+
 ```
 
 
@@ -218,21 +142,22 @@ shannon<-function(x){
 
 請選出104學年第1學期有修通識科目ZT13的學生系別，再透過先前創造的`shannon()`來計算該課程的學生系別背景多樣性指標值（最後一行請讓螢幕出現此值）。
 ```{r ans18}
-transcriptData %>% 
-{(.$學年 == "104") & (.$學期 == "1") & (.$科目名稱 == "ZT13")} %>%
-  transcriptData[.,] -> sample1
-
-shannon(c("D8","G8","H1","J4","L6","M6","N3","N8","O3","P1","Q7","Q9","S3","V1","W5","W7"))
-
+transcriptData %>%
+  filter(學年=="104",學期=="1",科目名稱=="ZT13") %>%
+  .$系別 %>% shannon()
 ```
 
 
 > Shannon index值越高表示學生系別背景越多樣化。
 
+
 ##challenge
 在transcriptData創新的logic變數**每週一第六節有課**
 ```{r}
 str_replace_all(transcriptData$上課時間及教室,"~",":")->transcriptData$上課時間及教室
-str_c("c(",transcriptData$上課時間及教室,")")->transcriptData$上課時間及教室
+str_c("c(",transcriptData$上課時間及教室,")") %>% as.factor ->transcriptData$上課時間及教室
+
+
+
 ```
 
