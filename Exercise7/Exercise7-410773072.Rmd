@@ -46,8 +46,8 @@ transcriptData %>%
   summarise(
     學系=學系[1],
     學屆=學屆[1],
-    學年平均成績=mean(學期成績)
-  ) ->gradeEachYear
+    學年平均成績=sum(學期成績*學分數)/sum(學分數)
+  ) %>% ungroup->gradeEachYear
 gradeEachYear
 
 ```
@@ -58,10 +58,10 @@ gradeEachYear
 
 ```{r ans13}
 gradeEachYear %>%
-  group_by(學系,學屆) %>%
+  group_by(學系,學屆,學年) %>%
   mutate(
     學年PR = {percent_rank(學年平均成績)*100}
-  )->gradeEachYear
+  ) %>% ungroup ->gradeEachYear
 gradeEachYear
 ```
 
