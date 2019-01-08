@@ -52,17 +52,18 @@ transcriptData <- read_csv("https://raw.githubusercontent.com/tpemartin/github-d
 ```{r ans14}
 library(tidyr)
 transcriptData %>%
-  group_by(學號,學期,學年) %>%
+  group_by(學號,年級,學期) %>%
   summarise %>%
   nest->student1
 
+length(student1$學號)
+
 student1 %>% 
-  mutate(logic=str_detect(.$data,"1:4")) %>%
-  filter(logic=="TRUE") ->student1 
+  filter(.$data=="list(學期 = 1:2)") ->student1 
 student1 %>%
-  group_by(學號,學期) %>% summarise %>% nest ->student1
+  group_by(學號,年級) %>% summarise %>% nest ->student1
 student1 %>%
-  mutate(logic=str_detect(.$data," 1:2")) %>%
+  mutate(logic=str_detect(.$data," 1:4")) %>%
   filter(logic=="TRUE") ->student1
 length(student1$學號)
 #算出來有2342人
@@ -78,6 +79,18 @@ transcriptData[,c(10,11)] %>%
   unique->student
 length(student$學號)
 #算出2186人
+
+
+semesterNumber<-function(xx){
+  xx %>% as.factor ->xx
+  levels(xx) <- 1:length(levels(xx))
+  as.integer(xx)
+} 
+
+transcriptData$學年學期 %>% as.factor->a 
+1:length(levels(a))->levels(transcriptData$學年學期)
+as.integer(transcriptData$學年學期)
+
 ```
 
 ### 1.5 通識與PR
